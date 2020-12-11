@@ -1,0 +1,32 @@
+language: cpp
+os: linux
+dist: trusty
+script: make -j 2 all
+install:
+  - if [ "$CXX" = "clang++" ]; then export CC="clang-4.0" CXX="clang++-4.0"; fi
+  - if [ "$CXX" = "g++" ]; then export CC="gcc-6" CXX="g++-6"; fi
+matrix:
+  include:
+    - addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - g++-6
+      compiler:
+        - gcc
+      env:
+        - MATRIX_EVAL="CC=gcc && CXX=g++"
+    - addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+            - llvm-toolchain-trusty-4.0
+          packages:
+            - clang-4.0
+      compiler:
+        - clang
+      env:
+        - MATRIX_EVAL="CC=clang && CXX=clang++"
+before_install:
+  - eval "${MATRIX_EVAL}"
